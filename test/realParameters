@@ -1,0 +1,36 @@
+# Parameterset yielding
+ Reynolds = 75
+
+# resolution / Cells per Bubble diameter, default [40]
+resolution = 45
+
+# density of the denser phase / kg m^-3, default [1000]
+rho = 1000
+
+# bubble diameter / m, default [0.1]
+diameter = 0.05
+
+# speed of sound / m s^-1, default [10]
+c_s = 5.401154079524482
+
+# bulk viscosity ratio mu'/mu  , default [2]
+mu_ratio = 2
+
+# s_3 , default [1]
+s_3 = 1
+
+# s_5 , default [1]
+s_5 = 1.2
+
+# refine factor, default [1.1]
+factor = 1.1
+
+# maximum number of time steps, default [1e5]
+max_steps = 100000.0
+
+# output Settings
+techplot_interval = 100
+restart_interval = 1000
+
+# termination criterion
+resi_Re_rel = 0.0001

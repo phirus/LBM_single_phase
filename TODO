@@ -1,0 +1,28 @@
+To Do
+- shear flow boundary 2D/3D
+- velocity boundary 2D/3D
+- use Boundaries in 3D
+- not calculate Gradient every time 2D/3D
+- apply more correct velocity measurement to 3D
+- centering in preprocess
+- initialize shear flow 3D
+- analyze lateral Bubble motion 3D
+- use shear rate in main.cc
+
+Done
+- Param log as CSV
+- Test alternative ways to determine velocities
+- initialize shear flow 2D
+- update preprocessFile in /example
+- fix numOfthreads in all cases
+- fixed cut-out 3D
+- write proper CSV files
+- update makefile for /translate
+- analyze bubble position 2D / 3D
+- analyze lateral Bubble motion 2D
+- C++11 in anderen Makefiles hinzufügen
+- find indices of bubble Cells 
+- cut and paste Cells from one Lattice to another 
+- process warnings
+- enable shear flow in Preprocessfile (shear rate)
+- correct DimSet to int arrays

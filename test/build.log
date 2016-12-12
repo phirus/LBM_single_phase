@@ -1,0 +1,140 @@
+test -d bin || mkdir -p bin
+test -d obj || mkdir -p obj
+g++ -Wall -g -I../../../gtest-1.6.0/include -c ../src/binaryIO.cpp -o obj/binaryIO.o
+g++ -Wall -g -I../../../gtest-1.6.0/include -c ../src/cell.cpp -o obj/cell.o
+g++ -Wall -g -I../../../gtest-1.6.0/include -c ../src/lattice.cpp -o obj/lattice.o
+g++ -Wall -g -I../../../gtest-1.6.0/include -c main.cpp -o obj/main.o
+g++ -Wall -g -I../../../gtest-1.6.0/include -c ../src/matrix.cpp -o obj/matrix.o
+g++ -Wall -g -I../../../gtest-1.6.0/include -c ../src/paramset.cpp -o obj/paramset.o
+g++ -Wall -g -I../../../gtest-1.6.0/include -c ../src/preprocess.cpp -o obj/preprocess.o
+g++ -Wall -g -I../../../gtest-1.6.0/include -c ../src/timetrack.cpp -o obj/timetrack.o
+g++ -Wall -g -I../../../gtest-1.6.0/include -c ../src/vector.cpp -o obj/vector.o
+g++ -o bin/GradientBased obj/binaryIO.o obj/cell.o obj/lattice.o obj/main.o obj/matrix.o obj/paramset.o obj/preprocess.o obj/timetrack.o obj/vector.o  -lpthread ../../../gtest-1.6.0/make/gtest_main.a
+./bin/GradientBased
+[==========] Running 46 tests from 10 test cases.
+[----------] Global test environment set-up.
+[----------] 12 tests from Cell
+[ RUN      ] Cell.constructor0
+[       OK ] Cell.constructor0 (0 ms)
+[ RUN      ] Cell.constructorRed1
+[       OK ] Cell.constructorRed1 (0 ms)
+[ RUN      ] Cell.constructorBlue1
+[       OK ] Cell.constructorBlue1 (0 ms)
+[ RUN      ] Cell.constructorRed2
+[       OK ] Cell.constructorRed2 (0 ms)
+[ RUN      ] Cell.constructorBlue2
+[       OK ] Cell.constructorBlue2 (0 ms)
+[ RUN      ] Cell.constructorSolid
+[       OK ] Cell.constructorSolid (0 ms)
+[ RUN      ] Cell.constructorIni
+[       OK ] Cell.constructorIni (0 ms)
+[ RUN      ] Cell.rho
+[       OK ] Cell.rho (0 ms)
+[ RUN      ] Cell.Psi1
+[       OK ] Cell.Psi1 (0 ms)
+[ RUN      ] Cell.Psi2
+[       OK ] Cell.Psi2 (0 ms)
+[ RUN      ] Cell.Velo
+[       OK ] Cell.Velo (0 ms)
+[ RUN      ] Cell.equal
+[       OK ] Cell.equal (0 ms)
+[----------] 12 tests from Cell (0 ms total)
+
+[----------] 5 tests from Matrix
+[ RUN      ] Matrix.trafo
+[       OK ] Matrix.trafo (0 ms)
+[ RUN      ] Matrix.backtrafo
+[       OK ] Matrix.backtrafo (0 ms)
+[ RUN      ] Matrix.relaxation_without_omega
+[       OK ] Matrix.relaxation_without_omega (0 ms)
+[ RUN      ] Matrix.relaxation_linewise
+[       OK ] Matrix.relaxation_linewise (0 ms)
+[ RUN      ] Matrix.relaxation_omega
+[       OK ] Matrix.relaxation_omega (0 ms)
+[----------] 5 tests from Matrix (0 ms total)
+
+[----------] 3 tests from ParamSet
+[ RUN      ] ParamSet.Phi
+[       OK ] ParamSet.Phi (0 ms)
+[ RUN      ] ParamSet.inter
+[       OK ] ParamSet.inter (0 ms)
+[ RUN      ] ParamSet.equal
+[       OK ] ParamSet.equal (0 ms)
+[----------] 3 tests from ParamSet (0 ms total)
+
+[----------] 2 tests from Vector
+[ RUN      ] Vector.scalar
+[       OK ] Vector.scalar (0 ms)
+[ RUN      ] Vector.angle
+[       OK ] Vector.angle (0 ms)
+[----------] 2 tests from Vector (0 ms total)
+
+[----------] 3 tests from Constants
+[ RUN      ] Constants.BReis
+[       OK ] Constants.BReis (0 ms)
+[ RUN      ] Constants.W
+[       OK ] Constants.W (0 ms)
+[ RUN      ] Constants.Xi
+[       OK ] Constants.Xi (0 ms)
+[----------] 3 tests from Constants (0 ms total)
+
+[----------] 11 tests from Lattice
+[ RUN      ] Lattice.constructor
+[       OK ] Lattice.constructor (0 ms)
+[ RUN      ] Lattice.stream
+[       OK ] Lattice.stream (0 ms)
+[ RUN      ] Lattice.bounceSmall
+[       OK ] Lattice.bounceSmall (0 ms)
+[ RUN      ] Lattice.bounceClosed
+[       OK ] Lattice.bounceClosed (0 ms)
+[ RUN      ] Lattice.bounceClosed2
+[       OK ] Lattice.bounceClosed2 (0 ms)
+[ RUN      ] Lattice.periodic
+[       OK ] Lattice.periodic (1 ms)
+[ RUN      ] Lattice.streamRho
+[       OK ] Lattice.streamRho (1 ms)
+[ RUN      ] Lattice.collideSingle
+[       OK ] Lattice.collideSingle (0 ms)
+[ RUN      ] Lattice.directions
+[       OK ] Lattice.directions (0 ms)
+[ RUN      ] Lattice.Gradient
+[       OK ] Lattice.Gradient (0 ms)
+[ RUN      ] Lattice.collisionBalanceAll
+[       OK ] Lattice.collisionBalanceAll (0 ms)
+[----------] 11 tests from Lattice (3 ms total)
+
+[----------] 2 tests from MRT
+[ RUN      ] MRT.trafo
+[       OK ] MRT.trafo (0 ms)
+[ RUN      ] MRT.mass
+[       OK ] MRT.mass (0 ms)
+[----------] 2 tests from MRT (0 ms total)
+
+[----------] 4 tests from BinaryIO
+[ RUN      ] BinaryIO.output
+[       OK ] BinaryIO.output (131 ms)
+[ RUN      ] BinaryIO.paramLog
+[       OK ] BinaryIO.paramLog (6 ms)
+[ RUN      ] BinaryIO.queryTest
+[       OK ] BinaryIO.queryTest (0 ms)
+[ RUN      ] BinaryIO.paramConfIn
+[       OK ] BinaryIO.paramConfIn (1 ms)
+[----------] 4 tests from BinaryIO (138 ms total)
+
+[----------] 3 tests from Preprocess
+[ RUN      ] Preprocess.constr
+[       OK ] Preprocess.constr (0 ms)
+[ RUN      ] Preprocess.FileInput
+[       OK ] Preprocess.FileInput (1 ms)
+[ RUN      ] Preprocess.refine
+[       OK ] Preprocess.refine (0 ms)
+[----------] 3 tests from Preprocess (1 ms total)
+
+[----------] 1 test from timetrack
+[ RUN      ] timetrack.basic
+[       OK ] timetrack.basic (0 ms)
+[----------] 1 test from timetrack (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 46 tests from 10 test cases ran. (144 ms total)
+[  PASSED  ] 46 tests.

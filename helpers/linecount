@@ -1,0 +1,86 @@
+cd python
+python_count=0
+codelines=`cat * | wc -l`
+python_count=$((codelines))
+echo $python_count "lines of python code"
+cd ..
+
+cd julia
+julia_count=0
+codelines=`cat *.jl | wc -l`
+julia_count=$((codelines))
+cd GramSchmidt
+codelines=`cat *.jl | wc -l`
+julia_count=$((codelines + julia_count))
+cd ../optimization
+codelines=`cat *.jl | wc -l`
+julia_count=$((codelines + julia_count))
+cd ../findB
+codelines=`cat *.jl | wc -l`
+julia_count=$((codelines + julia_count))
+cd ..
+echo $julia_count "lines of julia code"
+cd ..
+
+cd ../src
+src_count=0
+headers=0
+codelines=0
+tmp=`cat *.h | wc -l`
+headers=$((headers + tmp))
+tmp=`cat *.cc | wc -l`
+codelines=$((codelines + tmp))
+cd 2D
+tmp=`cat *.h | wc -l`
+headers=$((headers + tmp))
+tmp=`cat *.cc | wc -l`
+codelines=$((codelines + tmp))
+cd ../3D
+tmp=`cat *.h | wc -l`
+headers=$((headers + tmp))
+tmp=`cat *.cc | wc -l`
+codelines=$((codelines + tmp))
+cd ..
+src_count=$((headers+codelines))
+echo $src_count "lines of C++ source code"
+
+cd ../test
+test_count=0
+headers=`cat *.h | wc -l`
+codelines=`cat *.cc | wc -l`
+test_count=$((headers+codelines))
+echo $test_count "lines of test code"
+
+total_count=$((test_count+src_count+julia_count+python_count))
+echo $total_count "total lines of code"
+
+echo
+
+cd ../example
+example_count=`cat *.cc | wc -l`
+echo $example_count "extra lines for example binary"
+
+cd ../helpers
+cd deeperAnalysis
+deeperAnalysis_count=`cat *.cc | wc -l`
+echo $deeperAnalysis_count "extra lines for deeperAnalysis binary"
+cd ..
+
+cd translate
+translate_count=`cat *.cc | wc -l`
+echo $translate_count "extra lines for translate binary"
+cd ..
+
+cd Postprocess
+Postprocess_count=`cat *.cc | wc -l`
+echo $Postprocess_count "extra lines for Postprocess binary"
+
+binary_total=$((example_count+deeperAnalysis_count+translate_count+Postprocess_count)) 
+echo $binary_total "lines of code for binaries"
+
+echo
+
+absolute_total=$((total_count+binary_total)) 
+echo $absolute_total "all in all lines of code"
+
+echo

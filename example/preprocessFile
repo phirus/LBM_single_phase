@@ -1,0 +1,52 @@
+####### DIMENSIONLESS PARAMETERS #######
+
+# Reynolds-Number -> corresponds with tau, default [10]
+Reynolds = 15
+
+
+#### DOMAIM SIZE ####
+
+# resolution / Cells per Bubble diameter, default [30]
+resolution = 35
+
+# number of Cells in x direction, default [50]
+xCells = 300
+
+# number of Cells in y direction,, default [50]
+yCells = 1200
+
+# number of Cells in z direction,, default [50]
+zCells = 1
+
+####### DENSITY #######
+
+# density of the denser phase / kg m^-3, default [1]
+rho = 1
+
+####### PARAMETERS FOR RELAXATION-MATRIX #######
+
+# bulk viscosity ratio mu'/mu  , default [2]
+mu_ratio = 1.8
+
+# s_3 , default [1]
+s_3 = 1.2
+
+# s_5 , default [1]
+s_5 = 1.2
+
+####### SHEAR FLOW #######
+
+# does simulation feature shear flow, default [false]
+isShearFlow = false
+
+# shear rate in 1/s, default [0]
+shearRate = 0
+
+####### CONTOLS #######
+
+# maximum number of time steps, default [1e5]
+max_steps = 1.0e6
+
+# output Settings
+output_interval = 1000
+restart_interval = 10000
