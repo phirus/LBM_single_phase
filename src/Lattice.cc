@@ -273,28 +273,7 @@ void Lattice::evaluateBoundaries(int threads)
             //#pragma omp for schedule(static,10) nowait
             for (int x=lowerX; x<upperX; x++)
             {
-                Cell tmpCell = (*data)[x][ysize-1] ;
-    
-                array2D f = tmpCell.getF();
-                double u_y;
-
-                if(rho>0)
-                {
-                    u_y = -1.0 + (f[0] + f[1] + f[5] + 2* (f[2] + f[3] + f[4])) / rho;
-                    f[7] = f[3] - 2.0/3.0 * rho*u_y;
-                    f[6] = - rho*u_y/6.0 + f[2] + (f[1] - f[5])/2.0;
-                    f[8] = - rho*u_y/6.0 + f[4] + (f[5] - f[1])/2.0;
-                }
-                else
-                {
-                    u_y = 0;
-                    f[7] = 0;
-                    f[6] = 0;
-                    f[8] = 0;
-                }
-
-                tmpCell.setF(f);
-                (*data)[x][ysize-1] = tmpCell;
+                (*data)[x][ysize-1] = boundaryNorthPres((*data)[x][ysize-1], rho);
             }
         } // end if north pressure
 
@@ -367,16 +346,7 @@ void Lattice::evaluateBoundaries(int threads)
             //#pragma omp for schedule(static,10) nowait
             for (int x=lowerX; x<upperX; x++)
             {
-                Cell tmpCell = (*data)[x][ysize-1] ;
-                array2D f = tmpCell.getF();
-                double rho = (f[0] + f[1] + f[5] + 2* (f[2] + f[3] + f[4])) / (u_y + 1);
-
-                f[7] = f[3] - 2.0/3.0 * rho*u_y;
-                f[6] = -rho*u_y/6.0 + f[2] + (f[1] - f[5])/2.0;
-                f[8] = -rho*u_y/6.0 + f[4] + (f[5] - f[1])/2.0;
-
-                tmpCell.setF(f);
-                (*data)[x][ysize-1] = tmpCell;
+                (*data)[x][ysize-1] = boundaryNorthVelo((*data)[x][ysize-1], uy);
             }
         } // end if north velocity
 
@@ -447,27 +417,7 @@ void Lattice::evaluateBoundaries(int threads)
             //#pragma omp for schedule(static,10) nowait
             for (int x=lowerX; x<upperX; x++)
             {
-                Cell tmpCell = (*data)[x][0] ;
-    
-                array2D f = tmpCell.getF();
-                double u_y;
-    
-                if(rho>0 )
-                {
-                    u_y = 1.0 - (f[0] + f[1] + f[5] + 2* (f[6] + f[7] + f[8])) / rho;
-                    f[3] = f[7] + 2.0/3.0 * rho*u_y;
-                    f[2] = rho*u_y/6.0 + f[6] + (f[5] - f[1])/2.0;
-                    f[4] = rho*u_y/6.0 + f[8] + (f[1] - f[5])/2.0;
-                }
-                else
-                {
-                    u_y = 0;
-                    f[3] = 0;
-                    f[2] = 0;
-                    f[4] = 0;
-                }
-                tmpCell.setF(f);
-                (*data)[x][0] = tmpCell;
+                (*data)[x][0] = boundarySouthPres((*data)[x][0],rho);
             }
         } // end if south pressure
 
@@ -539,16 +489,7 @@ void Lattice::evaluateBoundaries(int threads)
             //#pragma omp for schedule(static,10) nowait
             for (int x=lowerX; x<upperX; x++)
             {
-                Cell tmpCell = (*data)[x][0] ;
-                array2D f = tmpCell.getF(); 
-                double rho = (f[0] + f[1] + f[5] + 2* (f[6] + f[7] + f[8])) / (1 - u_y);
-                    
-                f[3] = f[7] + 2.0/3.0 * rho*u_y;
-                f[2] = rho*u_y/6.0 + f[6] + (f[5] - f[1])/2.0;
-                f[4] = rho*u_y/6.0 + f[8] + (f[1] - f[5])/2.0;
-                
-                tmpCell.setF(f);
-                (*data)[x][0] = tmpCell;
+                (*data)[x][0] = boundarySouthVelo((*data)[x][0],uy);
             }
         } // end if south velocity   
 
@@ -898,38 +839,7 @@ const bool Lattice::operator==(const Lattice& other)const
 
 ///////////////////////////// PRIVATE /////////////////////////////
 
-//=========================== OPERATIONS ===========================
-
-inline void Lattice::linearIndex(int index, int& x, int& y)const
-{
-    x = (index)%xsize;
-    y = (index)/xsize;
-}
-
-void Lattice::streamAndBouncePull(Cell& tCell, const direction2D& dir)const
-{
-    const array2D f = tCell.getF();
-    array2D ftmp;
-    for (int color = 0; color<=1;color++)
-    {
-        ftmp[0] = (*data)[ dir[0].x ][ dir[0].y ].getF()[0];
-
-        for (int i=1;i<9;i++)
-        {
-            const Cell neighbor = (*data)[ dir[PULL_INDEX_2D[i]].x ][ dir[PULL_INDEX_2D[i]].y ];
-            if (neighbor.getIsSolid() == false) // if(neighbor not solid?) -> stream
-            {
-                ftmp[i] = neighbor.getF()[i];    
-            }
-            else  // else -> bounce back
-            {
-                const double rho = tCell.getRho();
-                ftmp[i] = f[PULL_INDEX_2D[i]] - (2.0 * 3.0 * WEIGHTS_2D[i] * rho * (DIRECTION_2D[i] * neighbor.getU()) ) ;
-            } 
-        } // end for i
-    } // end for color
-    tCell.setF(ftmp);
-}
+//=========================== BOUNDARY TREATMENT ===========================
 
 const bool Lattice::isBoundary(int x, int y)const
 {
@@ -985,6 +895,116 @@ void Lattice::buildWalls()
     }    
 
 }
+
+const Cell Lattice::boundaryNorthPres(Cell tmp, double rho)const
+{
+    array2D f = tmp.getF();
+    double u_y;
+
+    if(rho>0)
+    {
+        u_y = -1.0 + (f[0] + f[1] + f[5] + 2* (f[2] + f[3] + f[4])) / rho;
+        f[7] = f[3] - 2.0/3.0 * rho*u_y;
+        f[6] = - rho*u_y/6.0 + f[2] + (f[1] - f[5])/2.0;
+        f[8] = - rho*u_y/6.0 + f[4] + (f[5] - f[1])/2.0;
+    }
+    else
+    {
+        u_y = 0;
+        f[7] = 0;
+        f[6] = 0;
+        f[8] = 0;
+    }
+    tmp.setF(f);
+    return tmp;
+}
+
+const Cell Lattice::boundaryNorthVelo(Cell tmp, double uy)const
+{
+    array2D f = tmp.getF();
+    double rho = (f[0] + f[1] + f[5] + 2* (f[2] + f[3] + f[4])) / (u_y + 1);
+
+    f[7] = f[3] - 2.0/3.0 * rho*u_y;
+    f[6] = -rho*u_y/6.0 + f[2] + (f[1] - f[5])/2.0;
+    f[8] = -rho*u_y/6.0 + f[4] + (f[5] - f[1])/2.0;
+
+    tmp.setF(f);
+    return tmp;
+}
+
+const Cell Lattice::boundarySouthPres(Cell tmp, double rho)const
+{
+    array2D f = tmp.getF();
+    double u_y;
+    
+    if(rho>0 )
+    {
+        u_y = 1.0 - (f[0] + f[1] + f[5] + 2* (f[6] + f[7] + f[8])) / rho;
+        f[3] = f[7] + 2.0/3.0 * rho*u_y;
+        f[2] = rho*u_y/6.0 + f[6] + (f[5] - f[1])/2.0;
+        f[4] = rho*u_y/6.0 + f[8] + (f[1] - f[5])/2.0;
+    }
+    else
+    {
+        u_y = 0;
+        f[3] = 0;
+        f[2] = 0;
+        f[4] = 0;
+    }
+    tmp.setF(f);
+    return tmp;
+}
+
+const Cell Lattice::boundarySouthVelo(Cell tmp, double uy)const
+{
+    array2D f = tmp.getF(); 
+    double rho = (f[0] + f[1] + f[5] + 2* (f[6] + f[7] + f[8])) / (1 - u_y);
+
+    f[3] = f[7] + 2.0/3.0 * rho*u_y;
+    f[2] = rho*u_y/6.0 + f[6] + (f[5] - f[1])/2.0;
+    f[4] = rho*u_y/6.0 + f[8] + (f[1] - f[5])/2.0;
+    
+    tmp.setF(f);
+    return tmp;
+
+}
+
+//=========================== OPERATIONS ===========================
+
+inline void Lattice::linearIndex(int index, int& x, int& y)const
+{
+    x = (index)%xsize;
+    y = (index)/xsize;
+}
+
+void Lattice::streamAndBouncePull(Cell& tCell, const direction2D& dir)const
+{
+    const array2D f = tCell.getF();
+    array2D ftmp;
+    for (int color = 0; color<=1;color++)
+    {
+        ftmp[0] = (*data)[ dir[0].x ][ dir[0].y ].getF()[0];
+
+        for (int i=1;i<9;i++)
+        {
+            const Cell neighbor = (*data)[ dir[PULL_INDEX_2D[i]].x ][ dir[PULL_INDEX_2D[i]].y ];
+            if (neighbor.getIsSolid() == false) // if(neighbor not solid?) -> stream
+            {
+                ftmp[i] = neighbor.getF()[i];    
+            }
+            else  // else -> bounce back
+            {
+                const double rho = tCell.getRho();
+                ftmp[i] = f[PULL_INDEX_2D[i]] - (2.0 * 3.0 * WEIGHTS_2D[i] * rho * (DIRECTION_2D[i] * neighbor.getU()) ) ;
+            } 
+        } // end for i
+    } // end for color
+    tCell.setF(ftmp);
+}
+
+
+
+
 
 ///////////////////////////// C-STYLE /////////////////////////////
 

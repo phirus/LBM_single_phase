@@ -56,6 +56,9 @@ public:
     void setBoundaries(const Boundaries& newBound);
     inline void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
 
+    /// boundary treatment
+    const Cell boundaryNorthVelo(const Cell& tmp, double uy);
+
     /// operators
     Lattice& operator=(const Lattice& other);
     const bool operator==(const Lattice& other)const;
@@ -66,10 +69,19 @@ private:
     ParamSet param;     /// < set of parameters used during the simulation
     Boundaries bound;
 
-    inline void linearIndex(int index, int& x, int& y)const;
-    void streamAndBouncePull(Cell& tCell, const direction2D& dir)const; /// < internal streaming mechanism with bounce back
+    /// boundary treatment
     const bool isBoundary(int x, int y)const;
     void buildWalls(); /// < and the Mexicans pay for it
+    const Cell boundaryNorthPres(Cell tmp, double rho)const;
+    const Cell boundaryNorthVelo(Cell tmp, double uy)const;
+    
+    const Cell boundarySouthPres(Cell tmp, double rho)const;
+    const Cell boundarySouthVelo(Cell tmp, double uy)const;
+
+    /// operations
+    inline void linearIndex(int index, int& x, int& y)const;
+    void streamAndBouncePull(Cell& tCell, const direction2D& dir)const; /// < internal streaming mechanism with bounce back
+  
 };
 
 /// calculates the equilibrium distribution based of a cell
