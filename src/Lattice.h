@@ -56,9 +56,6 @@ public:
     void setBoundaries(const Boundaries& newBound);
     inline void setParams(const ParamSet& newParam){param = newParam;}; /// < set a new parameter set
 
-    /// boundary treatment
-    const Cell boundaryNorthVelo(const Cell& tmp, double uy);
-
     /// operators
     Lattice& operator=(const Lattice& other);
     const bool operator==(const Lattice& other)const;
@@ -72,11 +69,25 @@ private:
     /// boundary treatment
     const bool isBoundary(int x, int y)const;
     void buildWalls(); /// < and the Mexicans pay for it
+
     const Cell boundaryNorthPres(Cell tmp, double rho)const;
     const Cell boundaryNorthVelo(Cell tmp, double uy)const;
     
     const Cell boundarySouthPres(Cell tmp, double rho)const;
     const Cell boundarySouthVelo(Cell tmp, double uy)const;
+
+    const Cell boundaryWestPres(Cell tmp, double rho)const;
+    const Cell boundaryWestVelo(Cell tmp, double ux)const;
+
+    const Cell boundaryEastPres(Cell tmp, double rho)const;
+    const Cell boundaryEastVelo(Cell tmp, double ux)const;
+
+    // corners
+    const Cell cornerNorthWest(Cell tmp, double rho)const;
+    const Cell cornerNorthEast(Cell tmp, double rho)const;
+    const Cell cornerSouthWest(Cell tmp, double rho)const;
+    const Cell cornerSouthEast(Cell tmp, double rho)const;
+
 
     /// operations
     inline void linearIndex(int index, int& x, int& y)const;

@@ -218,56 +218,12 @@ void Lattice::evaluateBoundaries(int threads)
 
             if(bound.west.getType() == pressure || bound.west.getType() == velocity)
             {
-                // north west corner
-                Cell tmpCell = (*data)[0][ysize-1];
-                array2D f = tmpCell.getF();
-
-                if(rho>0 )
-                {
-                    f[1] = f[5];
-                    f[7] = f[3];
-                    f[8] = f[4];
-                    f[2] = 0.5 * (rho - f[0] )  - f[3] - f[4] - f[5];
-                    f[6] = f[2];
-                }
-                else
-                {
-                    f[1] = 0;
-                    f[2] = 0;
-                    f[6] = 0;
-                    f[7] = 0;
-                    f[8] = 0;
-                }
-
-                tmpCell.setF(f);
-                (*data)[0][ysize-1] = tmpCell;
+                (*data)[0][ysize-1] = cornerNorthWest((*data)[0][ysize-1], rho);
             }
 
             if(bound.east.getType() == pressure || bound.east.getType() == velocity)
             {
-                // north east corner
-                Cell tmpCell = (*data)[xsize-1][ysize-1];
-                array2D f = tmpCell.getF();
-
-                if(rho>0 )
-                {
-                    f[5] = f[1];
-                    f[6] = f[2];
-                    f[7] = f[3];
-                    f[4] = 0.5 * (rho - f[0] )  - f[1] - f[2] - f[3];
-                    f[8] = f[4];
-                }
-                else
-                {
-                    f[4] = 0;
-                    f[5] = 0;
-                    f[6] = 0;
-                    f[7] = 0;
-                    f[8] = 0;
-                }
-
-                tmpCell.setF(f);
-                (*data)[xsize-1][ysize-1] = tmpCell;
+                (*data)[xsize-1][ysize-1] = cornerNorthEast((*data)[xsize-1][ysize-1], rho);
             }
 
             //#pragma omp for schedule(static,10) nowait
@@ -289,68 +245,20 @@ void Lattice::evaluateBoundaries(int threads)
 
             if(bound.west.getType() == pressure || bound.west.getType() == velocity)
             {
-                // north west corner
-                Cell tmpCell = (*data)[0][ysize-1];
-                double rho = bound.north.getRho();
-                array2D f = tmpCell.getF();
-
-                if(rho>0 )
-                {
-                    f[1] = f[5];
-                    f[7] = f[3];
-                    f[8] = f[4];
-                    f[2] = 0.5 * (rho - f[0] )  - f[3] - f[4] - f[5];
-                    f[6] = f[2];
-                }
-                else
-                {
-                    f[1] = 0;
-                    f[2] = 0;
-                    f[6] = 0;
-                    f[7] = 0;
-                    f[8] = 0;
-                }
-
-                tmpCell.setF(f);
-                (*data)[0][ysize-1] = tmpCell;
+                (*data)[0][ysize-1] = cornerNorthWest((*data)[0][ysize-1], bound.north.getRho());
             }
 
             if(bound.east.getType() == pressure || bound.east.getType() == velocity)
             {
-                // north east corner
-                Cell tmpCell = (*data)[xsize-1][ysize-1];
-                double rho = bound.north.getRho();
-                array2D f = tmpCell.getF();
-
-                if(rho>0 )
-                {
-                    f[5] = f[1];
-                    f[6] = f[2];
-                    f[7] = f[3];
-                    f[4] = 0.5 * (rho - f[0] )  - f[1] - f[2] - f[3];
-                    f[8] = f[4];
-                }
-                else
-                {
-                    f[4] = 0;
-                    f[5] = 0;
-                    f[6] = 0;
-                    f[7] = 0;
-                    f[8] = 0;
-                }
-
-                tmpCell.setF(f);
-                (*data)[xsize-1][ysize-1] = tmpCell;
+                (*data)[xsize-1][ysize-1] = cornerNorthEast((*data)[xsize-1][ysize-1], bound.north.getRho());
             }
 
             //#pragma omp for schedule(static,10) nowait
             for (int x=lowerX; x<upperX; x++)
             {
-                (*data)[x][ysize-1] = boundaryNorthVelo((*data)[x][ysize-1], uy);
+                (*data)[x][ysize-1] = boundaryNorthVelo((*data)[x][ysize-1], u_y);
             }
         } // end if north velocity
-
-
 
         // south boundary
         if(bound.south.getType() == pressure)
@@ -364,54 +272,12 @@ void Lattice::evaluateBoundaries(int threads)
     
             if(bound.west.getType() == pressure || bound.west.getType() == velocity)
             {
-                // south west corner
-                Cell tmpCell = (*data)[0][0];
-                array2D f = tmpCell.getF();
-    
-                if(rho>0 )
-                {
-                    f[1] = f[5];
-                    f[2] = f[6];
-                    f[3] = f[7];
-                    f[4] = 0.5 * (rho - f[0] )  - f[5] - f[6] - f[7];
-                    f[8] = f[4];
-                }
-                else
-                {
-                    f[1] = 0;
-                    f[2] = 0;
-                    f[3] = 0;
-                    f[4] = 0;
-                    f[8] = 0;
-                }
-                tmpCell.setF(f);
-                (*data)[0][0] = tmpCell;
+                (*data)[0][0] = cornerSouthWest((*data)[0][0], bound.south.getRho());
             }
     
             if(bound.east.getType() == pressure || bound.east.getType() == velocity)
             {
-                // south east corner
-                Cell tmpCell = (*data)[xsize-1][0];
-                array2D f = tmpCell.getF();
-    
-                if(rho>0 )
-                {
-                    f[3] = f[7];
-                    f[4] = f[8];
-                    f[5] = f[1];
-                    f[2] = 0.5 * (rho - f[0] )  - f[1] - f[7] - f[8];
-                    f[6] = f[4];
-                }
-                else
-                {
-                    f[3] = 0;
-                    f[4] = 0;
-                    f[5] = 0;
-                    f[2] = 0;
-                    f[6] = 0;
-                }
-                tmpCell.setF(f);
-                (*data)[xsize-1][0] = tmpCell;
+                (*data)[xsize-1][0] = cornerSouthEast((*data)[xsize-1][0], bound.south.getRho());
             }
 
             //#pragma omp for schedule(static,10) nowait
@@ -434,62 +300,18 @@ void Lattice::evaluateBoundaries(int threads)
     
             if(bound.west.getType() == pressure || bound.west.getType() == velocity)
             {
-                // south west corner
-                Cell tmpCell = (*data)[0][0];
-                double rho = bound.south.getRho();
-                array2D f = tmpCell.getF();
-    
-                if(rho>0 )
-                {
-                    f[1] = f[5];
-                    f[2] = f[6];
-                    f[3] = f[7];
-                    f[4] = 0.5 * (rho - f[0] )  - f[5] - f[6] - f[7];
-                    f[8] = f[4];
-                }
-                else
-                {
-                    f[1] = 0;
-                    f[2] = 0;
-                    f[3] = 0;
-                    f[4] = 0;
-                    f[8] = 0;
-                }
-                tmpCell.setF(f);
-                (*data)[0][0] = tmpCell;
+                (*data)[0][0] = cornerSouthWest((*data)[0][0], bound.south.getRho());
             }
     
             if(bound.east.getType() == pressure || bound.east.getType() == velocity)
             {
-                // south east corner
-                Cell tmpCell = (*data)[xsize-1][0];
-                double rho = bound.south.getRho();
-                array2D f = tmpCell.getF();
-    
-                if(rho>0 )
-                {
-                    f[3] = f[7];
-                    f[4] = f[8];
-                    f[5] = f[1];
-                    f[2] = 0.5 * (rho - f[0] )  - f[1] - f[7] - f[8];
-                    f[6] = f[4];
-                }
-                else
-                {
-                    f[3] = 0;
-                    f[4] = 0;
-                    f[5] = 0;
-                    f[2] = 0;
-                    f[6] = 0;
-                }
-                tmpCell.setF(f);
-                (*data)[xsize-1][0] = tmpCell;
+                (*data)[xsize-1][0] = cornerSouthEast((*data)[xsize-1][0], bound.south.getRho());
             }
 
             //#pragma omp for schedule(static,10) nowait
             for (int x=lowerX; x<upperX; x++)
             {
-                (*data)[x][0] = boundarySouthVelo((*data)[x][0],uy);
+                (*data)[x][0] = boundarySouthVelo((*data)[x][0],u_y);
             }
         } // end if south velocity   
 
@@ -506,27 +328,7 @@ void Lattice::evaluateBoundaries(int threads)
             //#pragma omp for schedule(static,10) nowait
             for (int y=lowerY; y< upperY; y++)
             {
-                Cell tmpCell = (*data)[0][y] ;
-    
-                array2D f = tmpCell.getF();
-                double u_x;
-    
-                if(rho>0)
-                {
-                    u_x = 1.0 - (f[0] + f[3] + f[7] + 2* (f[4] + f[5] + f[6])) / rho;
-                    f[1] = f[5] + 2.0/3.0 * rho*u_x;
-                    f[2] = rho*u_x/6.0 + f[6] + (f[7] - f[3])/2.0;
-                    f[8] = rho*u_x/6.0 + f[4] + (f[3] - f[7])/2.0;
-                }
-                else
-                {
-                    u_x = 0;
-                    f[1] = 0;
-                    f[2] = 0;
-                    f[8] = 0;
-                }
-                tmpCell.setF(f);
-                (*data)[0][y] = tmpCell;
+                (*data)[0][y] = boundarySouthVelo((*data)[0][y],rho);
             }
         }
         
@@ -542,16 +344,7 @@ void Lattice::evaluateBoundaries(int threads)
             //#pragma omp for schedule(static,10) nowait
             for (int y=lowerY; y< upperY; y++)
             {
-                Cell tmpCell = (*data)[0][y] ;
-                array2D f = tmpCell.getF();                
-                double rho = (f[0] + f[3] + f[7] + 2* (f[4] + f[5] + f[6])) / (1 - u_x);
-                    
-                f[1] = f[5] + 1.5 * rho*u_x;
-                f[2] = rho*u_x/6.0 + f[6] + (f[7] - f[3]) * 0.5;
-                f[8] = rho*u_x/6.0 + f[4] + (f[3] - f[7]) * 0.5;
-                
-                tmpCell.setF(f);
-                (*data)[0][y] = tmpCell;
+                (*data)[0][y] = boundaryWestVelo((*data)[0][y], u_x);
             }
         }
 
@@ -569,28 +362,7 @@ void Lattice::evaluateBoundaries(int threads)
             //#pragma omp for schedule(static,10) nowait
             for (int y=lowerY; y< upperY; y++)
             {
-                Cell tmpCell = (*data)[xsize-1][y] ;
-    
-                array2D f = tmpCell.getF();
-                double u_x;
-    
-                if(rho>0)
-                {
-                    u_x = -1.0 + (f[0] + f[3] + f[7] + 2* (f[1] + f[2] + f[8])) / rho;
-                    f[5] = f[1] - 2.0/3.0 * rho*u_x;
-                    f[6] = - rho*u_x/6.0 + f[2] + (f[3] - f[7])/2.0;
-                    f[4] = - rho*u_x/6.0 + f[8] + (f[7] - f[3])/2.0;
-                }
-                else
-                {
-                    u_x = 0;
-                    f[5] = 0;
-                    f[6] = 0;
-                    f[4] = 0;
-                }
-    
-                tmpCell.setF(f);
-                (*data)[xsize-1][y] = tmpCell;
+                (*data)[xsize-1][y] = boundaryEastPres((*data)[xsize-1][y], rho);
             }
         }
         
@@ -607,16 +379,7 @@ void Lattice::evaluateBoundaries(int threads)
             //#pragma omp for schedule(static,10) nowait
             for (int y=lowerY; y< upperY; y++)
             {
-                Cell tmpCell = (*data)[xsize-1][y] ;
-                array2D f = tmpCell.getF();
-                double rho = (f[0] + f[3] + f[7] + 2* (f[1] + f[2] + f[8])) / (1 + u_x);
-                                    
-                f[5] = f[1] - 2.0/3.0 * rho*u_x;
-                f[6] = - rho*u_x/6.0 + f[2] + (f[3] - f[7])/2.0;
-                f[4] = - rho*u_x/6.0 + f[8] + (f[7] - f[3])/2.0;
-                    
-                tmpCell.setF(f);
-                (*data)[xsize-1][y] = tmpCell;
+                (*data)[xsize-1][y] = boundaryEastVelo((*data)[xsize-1][y], u_x) ;
             }
         }
 
@@ -899,18 +662,18 @@ void Lattice::buildWalls()
 const Cell Lattice::boundaryNorthPres(Cell tmp, double rho)const
 {
     array2D f = tmp.getF();
-    double u_y;
+    double uy;
 
     if(rho>0)
     {
-        u_y = -1.0 + (f[0] + f[1] + f[5] + 2* (f[2] + f[3] + f[4])) / rho;
-        f[7] = f[3] - 2.0/3.0 * rho*u_y;
-        f[6] = - rho*u_y/6.0 + f[2] + (f[1] - f[5])/2.0;
-        f[8] = - rho*u_y/6.0 + f[4] + (f[5] - f[1])/2.0;
+        uy = -1.0 + (f[0] + f[1] + f[5] + 2* (f[2] + f[3] + f[4])) / rho;
+        f[7] = f[3] - 2.0/3.0 * rho*uy;
+        f[6] = - rho*uy/6.0 + f[2] + (f[1] - f[5])/2.0;
+        f[8] = - rho*uy/6.0 + f[4] + (f[5] - f[1])/2.0;
     }
     else
     {
-        u_y = 0;
+        uy = 0;
         f[7] = 0;
         f[6] = 0;
         f[8] = 0;
@@ -922,11 +685,11 @@ const Cell Lattice::boundaryNorthPres(Cell tmp, double rho)const
 const Cell Lattice::boundaryNorthVelo(Cell tmp, double uy)const
 {
     array2D f = tmp.getF();
-    double rho = (f[0] + f[1] + f[5] + 2* (f[2] + f[3] + f[4])) / (u_y + 1);
+    double rho = (f[0] + f[1] + f[5] + 2* (f[2] + f[3] + f[4])) / (uy + 1);
 
-    f[7] = f[3] - 2.0/3.0 * rho*u_y;
-    f[6] = -rho*u_y/6.0 + f[2] + (f[1] - f[5])/2.0;
-    f[8] = -rho*u_y/6.0 + f[4] + (f[5] - f[1])/2.0;
+    f[7] = f[3] - 2.0/3.0 * rho*uy;
+    f[6] = -rho*uy/6.0 + f[2] + (f[1] - f[5])/2.0;
+    f[8] = -rho*uy/6.0 + f[4] + (f[5] - f[1])/2.0;
 
     tmp.setF(f);
     return tmp;
@@ -935,18 +698,18 @@ const Cell Lattice::boundaryNorthVelo(Cell tmp, double uy)const
 const Cell Lattice::boundarySouthPres(Cell tmp, double rho)const
 {
     array2D f = tmp.getF();
-    double u_y;
+    double uy;
     
     if(rho>0 )
     {
-        u_y = 1.0 - (f[0] + f[1] + f[5] + 2* (f[6] + f[7] + f[8])) / rho;
-        f[3] = f[7] + 2.0/3.0 * rho*u_y;
-        f[2] = rho*u_y/6.0 + f[6] + (f[5] - f[1])/2.0;
-        f[4] = rho*u_y/6.0 + f[8] + (f[1] - f[5])/2.0;
+        uy = 1.0 - (f[0] + f[1] + f[5] + 2* (f[6] + f[7] + f[8])) / rho;
+        f[3] = f[7] + 2.0/3.0 * rho*uy;
+        f[2] = rho*uy/6.0 + f[6] + (f[5] - f[1])/2.0;
+        f[4] = rho*uy/6.0 + f[8] + (f[1] - f[5])/2.0;
     }
     else
     {
-        u_y = 0;
+        uy = 0;
         f[3] = 0;
         f[2] = 0;
         f[4] = 0;
@@ -958,16 +721,188 @@ const Cell Lattice::boundarySouthPres(Cell tmp, double rho)const
 const Cell Lattice::boundarySouthVelo(Cell tmp, double uy)const
 {
     array2D f = tmp.getF(); 
-    double rho = (f[0] + f[1] + f[5] + 2* (f[6] + f[7] + f[8])) / (1 - u_y);
+    double rho = (f[0] + f[1] + f[5] + 2* (f[6] + f[7] + f[8])) / (1 - uy);
 
-    f[3] = f[7] + 2.0/3.0 * rho*u_y;
-    f[2] = rho*u_y/6.0 + f[6] + (f[5] - f[1])/2.0;
-    f[4] = rho*u_y/6.0 + f[8] + (f[1] - f[5])/2.0;
+    f[3] = f[7] + 2.0/3.0 * rho*uy;
+    f[2] = rho*uy/6.0 + f[6] + (f[5] - f[1])/2.0;
+    f[4] = rho*uy/6.0 + f[8] + (f[1] - f[5])/2.0;
     
     tmp.setF(f);
     return tmp;
 
 }
+
+const Cell Lattice::boundaryWestPres(Cell tmp, double rho)const
+{
+    array2D f = tmp.getF();
+    double ux;
+    
+    if(rho>0)
+    {
+        ux = 1.0 - (f[0] + f[3] + f[7] + 2* (f[4] + f[5] + f[6])) / rho;
+        f[1] = f[5] + 2.0/3.0 * rho*ux;
+        f[2] = rho*ux/6.0 + f[6] + (f[7] - f[3])/2.0;
+        f[8] = rho*ux/6.0 + f[4] + (f[3] - f[7])/2.0;
+    }
+    else
+    {
+        ux = 0;
+        f[1] = 0;
+        f[2] = 0;
+        f[8] = 0;
+    }
+
+    tmp.setF(f);
+    return tmp;
+}
+
+const Cell Lattice::boundaryWestVelo(Cell tmp, double ux)const
+{
+    array2D f = tmp.getF();
+    double rho = (f[0] + f[3] + f[7] + 2* (f[4] + f[5] + f[6])) / (1 - ux);
+    
+    f[1] = f[5] + 1.5 * rho*ux;
+    f[2] = rho*ux/6.0 + f[6] + (f[7] - f[3]) * 0.5;
+    f[8] = rho*ux/6.0 + f[4] + (f[3] - f[7]) * 0.5;
+    
+    tmp.setF(f);
+    return tmp;
+}
+
+const Cell Lattice::boundaryEastPres(Cell tmp, double rho)const
+{
+    array2D f = tmp.getF();
+    double ux;
+    
+    if(rho>0)
+    {
+        ux = -1.0 + (f[0] + f[3] + f[7] + 2* (f[1] + f[2] + f[8])) / rho;
+        f[5] = f[1] - 2.0/3.0 * rho*ux;
+        f[6] = - rho*ux/6.0 + f[2] + (f[3] - f[7])/2.0;
+        f[4] = - rho*ux/6.0 + f[8] + (f[7] - f[3])/2.0;
+    }
+
+    else
+    {
+        ux = 0;
+        f[5] = 0;
+        f[6] = 0;
+        f[4] = 0;
+    }
+
+    tmp.setF(f);
+    return tmp;
+}
+
+const Cell Lattice::boundaryEastVelo(Cell tmp, double ux)const
+{
+    array2D f = tmp.getF();
+
+    double rho = (f[0] + f[3] + f[7] + 2* (f[1] + f[2] + f[8])) / (1 + ux);
+    f[5] = f[1] - 2.0/3.0 * rho*ux;
+    f[6] = - rho*ux/6.0 + f[2] + (f[3] - f[7])/2.0;
+    f[4] = - rho*ux/6.0 + f[8] + (f[7] - f[3])/2.0;
+    tmp.setF(f);
+
+    return tmp;
+}
+
+const Cell Lattice::cornerNorthWest(Cell tmp, double rho)const
+{
+    array2D f = tmp.getF();
+    if(rho>0 )
+    {
+        f[1] = f[5];
+        f[7] = f[3];
+        f[8] = f[4];
+        f[2] = 0.5 * (rho - f[0] )  - f[3] - f[4] - f[5];
+        f[6] = f[2];
+    }
+    else
+    {
+        f[1] = 0;
+        f[2] = 0;
+        f[6] = 0;
+        f[7] = 0;
+        f[8] = 0;
+    }
+
+    tmp.setF(f);
+    return tmp;    
+}
+
+const Cell Lattice::cornerNorthEast(Cell tmp, double rho)const
+{
+    array2D f = tmp.getF();
+    if(rho>0 )
+    {
+        f[5] = f[1];
+        f[6] = f[2];
+        f[7] = f[3];
+        f[4] = 0.5 * (rho - f[0] )  - f[1] - f[2] - f[3];
+        f[8] = f[4];
+    }
+    else
+    {
+        f[4] = 0;
+        f[5] = 0;
+        f[6] = 0;
+        f[7] = 0;
+        f[8] = 0;
+    }
+
+    tmp.setF(f);
+    return tmp;
+}
+
+const Cell Lattice::cornerSouthWest(Cell tmp, double rho)const
+{
+    array2D f = tmp.getF();
+    if(rho>0)
+    {
+        f[1] = f[5];
+        f[2] = f[6];
+        f[3] = f[7];
+        f[4] = 0.5 * (rho - f[0] )  - f[5] - f[6] - f[7];
+        f[8] = f[4];
+    }
+    else
+    {
+        f[1] = 0;
+        f[2] = 0;
+        f[3] = 0;
+        f[4] = 0;
+        f[8] = 0;
+    }
+
+    tmp.setF(f);
+    return tmp;   
+}
+
+const Cell Lattice::cornerSouthEast(Cell tmp, double rho)const
+{
+    array2D f = tmp.getF();
+    if(rho>0 )
+    {
+        f[3] = f[7];
+        f[4] = f[8];
+        f[5] = f[1];
+        f[2] = 0.5 * (rho - f[0] )  - f[1] - f[7] - f[8];
+        f[6] = f[2];
+    }
+    else
+    {
+        f[3] = 0;
+        f[4] = 0;
+        f[5] = 0;
+        f[2] = 0;
+        f[6] = 0;
+    }
+
+    tmp.setF(f);
+    return tmp;
+}
+
 
 //=========================== OPERATIONS ===========================
 
