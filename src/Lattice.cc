@@ -684,14 +684,15 @@ const Cell Lattice::boundaryNorthPres(Cell tmp, double rho)const
 
 const Cell Lattice::boundaryNorthVelo(Cell tmp, double uy)const
 {
-    array2D f = tmp.getF();
-    double rho = (f[0] + f[1] + f[5] + 2* (f[2] + f[3] + f[4])) / (uy + 1);
+    //array2D f = tmp.getF();
+    //double rho = (f[0] + f[1] + f[5] + 2* (f[2] + f[3] + f[4])) / (uy + 1);
 
-    f[7] = f[3] - 2.0/3.0 * rho*uy;
-    f[6] = -rho*uy/6.0 + f[2] + (f[1] - f[5])/2.0;
-    f[8] = -rho*uy/6.0 + f[4] + (f[5] - f[1])/2.0;
+    //f[7] = f[3] - 2.0/3.0 * rho*uy;
+    //f[6] = -rho*uy/6.0 + f[2] + (f[1] - f[5])/2.0;
+    //f[8] = -rho*uy/6.0 + f[4] + (f[5] - f[1])/2.0;
 
-    tmp.setF(f);
+//    tmp.setF(f);
+    tmp.setF(eqDistro(1.0, Vector2D(0,uy)));
     return tmp;
 }
 
@@ -720,16 +721,16 @@ const Cell Lattice::boundarySouthPres(Cell tmp, double rho)const
 
 const Cell Lattice::boundarySouthVelo(Cell tmp, double uy)const
 {
-    array2D f = tmp.getF(); 
-    double rho = (f[0] + f[1] + f[5] + 2* (f[6] + f[7] + f[8])) / (1 - uy);
+    // array2D f = tmp.getF(); 
+    // double rho = (f[0] + f[1] + f[5] + 2* (f[6] + f[7] + f[8])) / (1 - uy);
 
-    f[3] = f[7] + 2.0/3.0 * rho*uy;
-    f[2] = rho*uy/6.0 + f[6] + (f[5] - f[1])/2.0;
-    f[4] = rho*uy/6.0 + f[8] + (f[1] - f[5])/2.0;
+    // f[3] = f[7] + 2.0/3.0 * rho*uy;
+    // f[2] = rho*uy/6.0 + f[6] + (f[5] - f[1])/2.0;
+    // f[4] = rho*uy/6.0 + f[8] + (f[1] - f[5])/2.0;
     
-    tmp.setF(f);
+    // tmp.setF(f);
+    tmp.setF(eqDistro(1.0, Vector2D(0,uy)));
     return tmp;
-
 }
 
 const Cell Lattice::boundaryWestPres(Cell tmp, double rho)const
@@ -758,14 +759,15 @@ const Cell Lattice::boundaryWestPres(Cell tmp, double rho)const
 
 const Cell Lattice::boundaryWestVelo(Cell tmp, double ux)const
 {
-    array2D f = tmp.getF();
-    double rho = (f[0] + f[3] + f[7] + 2* (f[4] + f[5] + f[6])) / (1 - ux);
+    // array2D f = tmp.getF();
+    // double rho = (f[0] + f[3] + f[7] + 2* (f[4] + f[5] + f[6])) / (1 - ux);
     
-    f[1] = f[5] + 1.5 * rho*ux;
-    f[2] = rho*ux/6.0 + f[6] + (f[7] - f[3]) * 0.5;
-    f[8] = rho*ux/6.0 + f[4] + (f[3] - f[7]) * 0.5;
+    // f[1] = f[5] + 1.5 * rho*ux;
+    // f[2] = rho*ux/6.0 + f[6] + (f[7] - f[3]) * 0.5;
+    // f[8] = rho*ux/6.0 + f[4] + (f[3] - f[7]) * 0.5;
     
-    tmp.setF(f);
+    // tmp.setF(f);
+    tmp.setF(eqDistro(1.0, Vector2D(ux,0)));
     return tmp;
 }
 
@@ -796,14 +798,15 @@ const Cell Lattice::boundaryEastPres(Cell tmp, double rho)const
 
 const Cell Lattice::boundaryEastVelo(Cell tmp, double ux)const
 {
-    array2D f = tmp.getF();
+    // array2D f = tmp.getF();
 
-    double rho = (f[0] + f[3] + f[7] + 2* (f[1] + f[2] + f[8])) / (1 + ux);
-    f[5] = f[1] - 2.0/3.0 * rho*ux;
-    f[6] = - rho*ux/6.0 + f[2] + (f[3] - f[7])/2.0;
-    f[4] = - rho*ux/6.0 + f[8] + (f[7] - f[3])/2.0;
-    tmp.setF(f);
+    // double rho = (f[0] + f[3] + f[7] + 2* (f[1] + f[2] + f[8])) / (1 + ux);
+    // f[5] = f[1] - 2.0/3.0 * rho*ux;
+    // f[6] = - rho*ux/6.0 + f[2] + (f[3] - f[7])/2.0;
+    // f[4] = - rho*ux/6.0 + f[8] + (f[7] - f[3])/2.0;
+    // tmp.setF(f);
 
+    tmp.setF(eqDistro(1.0, Vector2D(ux,0)));
     return tmp;
 }
 

@@ -191,21 +191,21 @@ void initialSetUp(Lattice& meins, Preprocess& prepro, Boundaries& bound, int xma
     meins.setParams(params);
 
     // get densities
-//    const Cell fluid(1,false);
-//    const Cell wall(0,true);
+    const Cell fluid(1,false);
+    const Cell wall(0,true);
 
     // setup geometry (bubble at the bottom, x-centered)
-//    const int R1 = prepro.getResolution()/2;
-//    const int ym1 = ymax / 2;
-//    const int xm1 = R1 + ym1;
+    const int R1 = prepro.getResolution()/2;
+    const int xm1 = xmax / 2;
+    const int ym1 = R1 + xm1;
 
-//    for(int j=0; j< ymax; j++)
-//    {
-//        for(int i=0; i< xmax; i++){
-//            if( (i-xm1)*(i-xm1) + (j-ym1)*(j-ym1) < R1*R1 ) meins.setCell(i,j,wall);
-//            else meins.setCell(i,j,fluid);
-//        }
-//    }
+   for(int j=0; j< ymax; j++)
+   {
+       for(int i=0; i< xmax; i++){
+           if( (i-xm1)*(i-xm1) + (j-ym1)*(j-ym1) < R1*R1 ) meins.setCell(i,j,wall);
+           else meins.setCell(i,j,fluid);
+       }
+   }
 
     meins.setBoundaries(bound);
     meins.equilibriumIni();
